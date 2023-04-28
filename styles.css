@@ -1,6 +1,16 @@
-html {
-  overflow-x: hidden;
+:root {
+  /* primary */
+  --clr-primary-400: hsl(259, 100%, 65%);
+  --clr-primary-700: hsl(0, 100%, 67%);
+
+  /* neutral  */
+  --clr-neutral-100: hsl(0, 0%, 100%);
+  --clr-neutral-200: hsl(0, 0%, 94%);
+  --clr-neutral-300: hsl(0, 0%, 86%);
+  --clr-neutral-400: hsl(0, 1%, 44%);
+  --clr-neutral-900: hsl(0, 0%, 8%);
 }
+
 body {
   font-family: "Poppins", sans-serif;
   box-sizing: border-box;
@@ -15,7 +25,7 @@ main {
   width: 100%;
   max-width: 1440px;
   margin: 0 auto;
-  background-color: hsl(0, 0%, 86%);
+  background-color: var(--clr-neutral-300);
   height: 100vh;
 }
 
@@ -23,7 +33,7 @@ main {
   width: 100%;
   max-width: 41em;
   min-width: 18em;
-  background-color: hsl(0, 0%, 100%);
+  background-color: var(--clr-neutral-100);
   padding: 3em;
   margin: 0 2em;
   border-radius: 2em 2em 12em 2em;
@@ -39,11 +49,11 @@ input[type="number"] {
   margin: 5px 0;
   line-height: 1.5;
   font-size: 1.5em;
-  color: black;
+  color: var(--clr-neutral-900);
   font-weight: 700;
   border-radius: 0.4em;
-  border: 1px solid hsl(0, 0%, 86%);
-  background-color: hsl(0, 0%, 100%);
+  border: 1px solid var(--clr-neutral-300);
+  background-color: var(--clr-neutral-100);
 }
 
 .day-input,
@@ -58,7 +68,7 @@ input[type="number"] {
 .error-day,
 .error-month,
 .error-year {
-  color: hsl(0, 100%, 67%);
+  color: var(--clr-primary-700);
   opacity: 0;
 }
 
@@ -75,12 +85,12 @@ label,
 ::placeholder {
   font-weight: 700;
   text-transform: uppercase;
-  color: hsl(0, 1%, 44%);
+  color: var(--clr-neutral-400);
 }
 
 .line {
   margin-top: 2.5em;
-  border-bottom: 1px solid hsl(0, 0%, 86%);
+  border-bottom: 1px solid var(--clr-neutral-300);
 }
 
 .action {
@@ -94,7 +104,7 @@ label,
   align-items: center;
   justify-content: center;
   border-radius: 50%;
-  background-color: hsl(259, 100%, 65%);
+  background-color: var(--clr-primary-400);
   position: absolute;
   top: -2.5em;
   right: 0;
@@ -105,7 +115,7 @@ label,
 .result {
   display: flex;
   align-items: center;
-  color: hsl(259, 100%, 65%);
+  color: var(--clr-primary-400);
   font-size: 2em;
   font-weight: 800;
   font-style: italic;
@@ -164,5 +174,5 @@ footer {
   text-align: center;
 }
 footer a {
-  color: hsl(228, 45%, 44%);
+  color: var(--clr-primary-400);
 }
