@@ -19,6 +19,7 @@ const setInputValues = (e) => {
   inputValues[e.target.name] = Number(e.target.value);
 };
 
+// Invalid
 const setInvalidInputStyle = (inputLabel, inputField, errorLabel) => {
   inputLabel.style.color = "hsl(0, 100%, 67%)";
   inputField.style.border = "2px solid hsl(0, 100%, 67%)";
@@ -32,6 +33,7 @@ const setInvalidInputStyle = (inputLabel, inputField, errorLabel) => {
   errorLabel.style.opacity = 1;
 };
 
+// Valid
 const setValidInputStyle = (inputLabel, inputField, errorLabel) => {
   inputLabel.style.color = "hsl(0, 1%, 44%)";
   inputField.style.border = "2px solid hsl(0, 0%, 86%)";
@@ -40,6 +42,7 @@ const setValidInputStyle = (inputLabel, inputField, errorLabel) => {
   errorLabel.style.opacity = 0;
 };
 
+// Validators
 const isValidYear = (year) => {
   if (year === "") {
     return "";
@@ -63,6 +66,12 @@ const isValidDay = (year, month, day) => {
   return day > 0 && day <= lastDay;
 };
 
+/**
+ * calculates the resulted difference between the present and the inputted date
+ * @param {string} year year inputted
+ * @param {string} month month inputted
+ * @param {string} day  day inputted
+ */
 const calculateDifference = (year, month, day) => {
   const pastDate = new Date(year, month, day);
   const today = new Date();
@@ -80,6 +89,7 @@ const calculateDifference = (year, month, day) => {
   daysResult.textContent = diffDays;
 };
 
+// collects inputted data
 const setInputEvents = () => {
   const inputs = document.querySelectorAll("input");
   inputs.forEach((input) => {
@@ -88,7 +98,7 @@ const setInputEvents = () => {
     });
   });
 };
-
+// Checks the validation of the date, then set appropriate styles.
 const setSubmitButtonEvent = () => {
   const submitButton = document.getElementById("submitBtn");
   submitButton.addEventListener("click", () => {
