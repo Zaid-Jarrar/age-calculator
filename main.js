@@ -30,14 +30,13 @@ const setInvalidInputStyle = (inputLabel, inputField, errorLabel) => {
     errorLabel.textContent = `must be a vaild ${inputLabel.textContent}`;
   }
   errorLabel.style.display = "block";
-  errorLabel.style.opacity = 1;
 };
 
 // Valid
 const setValidInputStyle = (inputLabel, inputField, errorLabel) => {
   inputLabel.style.color = "hsl(0, 1%, 44%)";
   inputField.style.border = "2px solid hsl(0, 0%, 86%)";
-  errorLabel.style.opacity = 0;
+  errorLabel.style.display = "none";
 };
 
 // Validators
@@ -61,7 +60,6 @@ const isValidDay = (year, month, day) => {
     return "";
   }
   var lastDay = new Date(year, month, 0).getDate();
-  console.log("last day", lastDay);
   return day > 0 && day <= lastDay;
 };
 

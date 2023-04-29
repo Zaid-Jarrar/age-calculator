@@ -69,7 +69,7 @@ input[type="number"] {
 .error-month,
 .error-year {
   color: var(--clr-primary-700);
-  opacity: 0;
+  display: none;
 }
 
 label {
@@ -154,7 +154,7 @@ i {
     font-size: 0.6em;
   }
   .line {
-    margin: 2em 0 4em 0;
+    margin: 3em 0 4em 0;
   }
   .circle {
     height: 4em;
