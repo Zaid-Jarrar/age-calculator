@@ -73,10 +73,18 @@ const calculateDifference = (year, month, day) => {
   const pastDate = new Date(year, month - 1, day);
   const today = new Date();
 
-  const diffYears = today.getFullYear() - pastDate.getFullYear();
+  // Date class calculates to if year is equal or larger than 100 years, with regard to Gregorian calendar.
+  // add below to calculate anything below 100
+  let diffYears;
+  if (year < 100) {
+    diffYears = today.getFullYear() - year;
+  } else {
+    diffYears = today.getFullYear() - pastDate.getFullYear();
+  }
+
   const diffMonths = today.getMonth() - pastDate.getMonth();
   const diffDays = today.getDate() - pastDate.getDate();
-
+  console.log(pastDate, today, diffYears);
   if (diffMonths < 0 || (diffMonths === 0 && diffDays < 0)) {
     diffYears--;
     diffMonths += 12;
