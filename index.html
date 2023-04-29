@@ -32,17 +32,30 @@
         <form class="form">
           <div class="day-input field">
             <label id="day-label" for="day">day</label>
-            <input id="day" name="day" placeholder="DD" type="number" />
+            <input id="day" name="day" placeholder="DD" type="number" min="1" max="31" />
             <span class="error-day">Must be a valid day</span>
           </div>
           <div class="month-input field">
             <label id="month-label" for="month">month</label>
-            <input type="number" name="month" placeholder="MM" id="month" />
+            <input
+              type="number"
+              name="month"
+              placeholder="MM"
+              id="month"
+              min="1"
+              max="12"
+            />
             <span class="error-month">Must be a valid month</span>
           </div>
           <div class="year-input field">
             <label id="year-label" for="year">year</label>
-            <input id="year" name="year" placeholder="YYYY" type="number" />
+            <input
+              id="year"
+              name="year"
+              placeholder="YYYY"
+              type="number"
+              min="1"
+            />
             <span class="error-year">Must be in the past</span>
           </div>
         </form>
