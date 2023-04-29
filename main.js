@@ -1,4 +1,4 @@
-let input = document.querySelectorAll("input");
+let inputs = document.querySelectorAll("input");
 let submitButton = document.getElementById("submitBtn");
 let dayLabel = document.getElementById("day-label");
 let dayInput = document.getElementById("day");
@@ -23,13 +23,13 @@ const setInputValues = (e) => {
 const setInvalidInputStyle = (inputLabel, inputField, errorLabel) => {
   inputLabel.style.color = "hsl(0, 100%, 67%)";
   inputField.style.border = "2px solid hsl(0, 100%, 67%)";
-  console.log("input", inputField.value);
 
   if (inputField.value === "") {
     errorLabel.textContent = "This field is required";
   } else {
     errorLabel.textContent = `must be a vaild ${inputLabel.textContent}`;
   }
+  errorLabel.style.display = "block";
   errorLabel.style.opacity = 1;
 };
 
@@ -37,8 +37,6 @@ const setInvalidInputStyle = (inputLabel, inputField, errorLabel) => {
 const setValidInputStyle = (inputLabel, inputField, errorLabel) => {
   inputLabel.style.color = "hsl(0, 1%, 44%)";
   inputField.style.border = "2px solid hsl(0, 0%, 86%)";
-  console.log("input", inputField.value);
-
   errorLabel.style.opacity = 0;
 };
 
@@ -63,6 +61,7 @@ const isValidDay = (year, month, day) => {
     return "";
   }
   var lastDay = new Date(year, month, 0).getDate();
+  console.log("last day", lastDay);
   return day > 0 && day <= lastDay;
 };
 
@@ -73,17 +72,26 @@ const isValidDay = (year, month, day) => {
  * @param {string} day  day inputted
  */
 const calculateDifference = (year, month, day) => {
-  const pastDate = new Date(year, month, day);
+  const pastDate = new Date(year, month - 1, day);
   const today = new Date();
-  const diffMilliseconds = today - pastDate;
-  const diffYears = Math.floor(diffMilliseconds / (1000 * 60 * 60 * 24 * 365));
-  const diffMonths = Math.floor(
-    (diffMilliseconds % (1000 * 60 * 60 * 24 * 365)) /
-      (1000 * 60 * 60 * 24 * 30)
-  );
-  const diffDays = Math.floor(
-    (diffMilliseconds % (1000 * 60 * 60 * 24 * 30)) / (1000 * 60 * 60 * 24)
-  );
+
+  const diffYears = today.getFullYear() - pastDate.getFullYear();
+  const diffMonths = today.getMonth() - pastDate.getMonth();
+  const diffDays = today.getDate() - pastDate.getDate();
+
+  if (diffMonths < 0 || (diffMonths === 0 && diffDays < 0)) {
+    diffYears--;
+    diffMonths += 12;
+    if (diffDays < 0) {
+      const daysInPreviousMonth = new Date(
+        today.getFullYear(),
+        today.getMonth(),
+        0
+      ).getDate();
+      diffDays += daysInPreviousMonth;
+    }
+  }
+
   yearsResult.textContent = diffYears;
   monthsResult.textContent = diffMonths;
   daysResult.textContent = diffDays;
@@ -91,7 +99,6 @@ const calculateDifference = (year, month, day) => {
 
 // collects inputted data
 const setInputEvents = () => {
-  const inputs = document.querySelectorAll("input");
   inputs.forEach((input) => {
     input.addEventListener("input", (e) => {
       setInputValues(e);
@@ -100,7 +107,6 @@ const setInputEvents = () => {
 };
 // Checks the validation of the date, then set appropriate styles.
 const setSubmitButtonEvent = () => {
-  const submitButton = document.getElementById("submitBtn");
   submitButton.addEventListener("click", () => {
     const validYear = isValidYear(inputValues.year);
     const validMonth = isValidMonth(inputValues.month);
@@ -129,11 +135,7 @@ const setSubmitButtonEvent = () => {
     }
 
     if (validDay && validMonth && validYear) {
-      calculateDifference(
-        inputValues.year,
-        inputValues.month - 1,
-        inputValues.day
-      );
+      calculateDifference(inputValues.year, inputValues.month, inputValues.day);
     }
   });
 };
