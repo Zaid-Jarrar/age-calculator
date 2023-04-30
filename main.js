@@ -55,11 +55,12 @@ const isValidMonth = (month) => {
   return month <= 12 && month > 0;
 };
 
-const isValidDay = (year, month, day) => {
+const isValidDay = (day, month, year) => {
   if (day === "") {
     return "";
   }
-  var lastDay = new Date(year, month, 0).getDate();
+
+  const lastDay = new Date(year, month, 0).getDate();
   return day > 0 && day <= lastDay;
 };
 
@@ -69,39 +70,89 @@ const isValidDay = (year, month, day) => {
  * @param {string} month month inputted
  * @param {string} day  day inputted
  */
+// const calculateDifference = (year, month, day) => {
+//   const pastDate = new Date(year, month - 1, day);
+//   const today = new Date();
+
+//   // Date class calculates to if year is equal or larger than 100 years, with regard to Gregorian calendar.
+//   // add below to calculate anything below 100
+//   let diffYears;
+//   if (year < 100) {
+//     diffYears = today.getFullYear() - year;
+//   } else {
+//     diffYears = today.getFullYear() - pastDate.getFullYear();
+//   }
+
+//   let diffMonths = today.getMonth() - pastDate.getMonth();
+//   let diffDays = today.getDate() - pastDate.getDate();
+//   if (diffMonths < 0 || (diffMonths === 0 && diffDays < 0)) {
+//     console.log("here");
+//     diffYears--;
+//     diffMonths += 12;
+//   }
+//   if (diffDays < 0) {
+//     const daysInPreviousMonth = new Date(
+//       today.getFullYear(),
+//       today.getMonth(),
+//       0
+//     ).getDate();
+//     diffDays += daysInPreviousMonth;
+//   }
+
+//   yearsResult.textContent = diffYears;
+//   monthsResult.textContent = diffMonths;
+//   daysResult.textContent = diffDays;
+// };
+
 const calculateDifference = (year, month, day) => {
   const pastDate = new Date(year, month - 1, day);
   const today = new Date();
+  const millisecondsPerDay = 86400000;
+  const millisecondsPerYear = 31536000000;
+  const millisecondsPerMonth = 2592000000;
 
-  // Date class calculates to if year is equal or larger than 100 years, with regard to Gregorian calendar.
-  // add below to calculate anything below 100
+  const diffMilliseconds = today.getTime() - pastDate.getTime();
+
   let diffYears;
   if (year < 100) {
     diffYears = today.getFullYear() - year;
   } else {
-    diffYears = today.getFullYear() - pastDate.getFullYear();
+    diffYears = Math.floor(diffMilliseconds / millisecondsPerYear);
   }
+  let diffMonths = Math.floor(
+    (diffMilliseconds % millisecondsPerYear) / millisecondsPerMonth
+  );
+  // console.log(--diffMonths);
 
-  const diffMonths = today.getMonth() - pastDate.getMonth();
-  const diffDays = today.getDate() - pastDate.getDate();
-  console.log(pastDate, today, diffYears);
+  let diffDays = today.getDate() - pastDate.getDate();
+
+  // let diffDays = Math.floor(
+  //   (diffMilliseconds % millisecondsPerMonth) / millisecondsPerDay
+  // );
+
   if (diffMonths < 0 || (diffMonths === 0 && diffDays < 0)) {
+    console.log("here");
     diffYears--;
     diffMonths += 12;
-    if (diffDays < 0) {
-      const daysInPreviousMonth = new Date(
-        today.getFullYear(),
-        today.getMonth(),
-        0
-      ).getDate();
-      diffDays += daysInPreviousMonth;
-    }
   }
-
+  // if (diffDays === 0) {
+  //   console.log("mont");
+  //   --diffMonths 
+  // } 
+  if (diffDays < 0) {
+    const daysInPreviousMonth = new Date(
+      today.getFullYear(),
+      today.getMonth(),
+      0
+    ).getDate();
+    diffDays += daysInPreviousMonth;
+  }
   yearsResult.textContent = diffYears;
   monthsResult.textContent = diffMonths;
   daysResult.textContent = diffDays;
+  console.log(diffYears, diffMonths, diffDays);
 };
+calculateDifference(100, 2, 1);
 
 // collects inputted data
 const setInputEvents = () => {
@@ -114,37 +165,44 @@ const setInputEvents = () => {
 // Checks the validation of the date, then set appropriate styles.
 const setSubmitButtonEvent = () => {
   submitButton.addEventListener("click", () => {
-    const validYear = isValidYear(inputValues.year);
-    const validMonth = isValidMonth(inputValues.month);
-    const validDay = isValidDay(
-      inputValues.year,
+    const year = isValidYear(inputValues.year);
+    const month = isValidMonth(inputValues.month);
+    const day = isValidDay(
+      inputValues.day,
       inputValues.month,
-      inputValues.day
+      inputValues.year
     );
-
-    if (!validDay) {
-      setInvalidInputStyle(dayLabel, dayInput, errorDay);
-    } else {
-      setValidInputStyle(dayLabel, dayInput, errorDay);
-    }
-
-    if (!validMonth) {
-      setInvalidInputStyle(monthLabel, monthInput, errorMonth);
-    } else {
-      setValidInputStyle(monthLabel, monthInput, errorMonth);
-    }
-
-    if (!validYear) {
-      setInvalidInputStyle(yearLabel, yearInput, errorYear);
-    } else {
-      setValidInputStyle(yearLabel, yearInput, errorYear);
-    }
-
-    if (validDay && validMonth && validYear) {
-      calculateDifference(inputValues.year, inputValues.month, inputValues.day);
-    }
+    setStylesOnSubmit(day, month, year);
   });
 };
 
+const setStylesOnSubmit = (day, month, year) => {
+  if (!day || !month || !year) {
+    yearsResult.textContent = "--";
+    monthsResult.textContent = "--";
+    daysResult.textContent = "--";
+  }
+  if (!day) {
+    setInvalidInputStyle(dayLabel, dayInput, errorDay);
+  } else {
+    setValidInputStyle(dayLabel, dayInput, errorDay);
+  }
+
+  if (!month) {
+    setInvalidInputStyle(monthLabel, monthInput, errorMonth);
+  } else {
+    setValidInputStyle(monthLabel, monthInput, errorMonth);
+  }
+
+  if (!year) {
+    setInvalidInputStyle(yearLabel, yearInput, errorYear);
+  } else {
+    setValidInputStyle(yearLabel, yearInput, errorYear);
+  }
+
+  if (day && month && year) {
+    calculateDifference(inputValues.year, inputValues.month, inputValues.day);
+  }
+};
 setInputEvents();
 setSubmitButtonEvent();
