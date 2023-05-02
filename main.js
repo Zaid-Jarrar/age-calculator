@@ -26,8 +26,10 @@ const setInvalidInputStyle = (inputLabel, inputField, errorLabel) => {
 
   if (inputField.value === "") {
     errorLabel.textContent = "This field is required";
+  } else if (inputField.name === "year") {
+    errorLabel.textContent = "Must be in the past";
   } else {
-    errorLabel.textContent = `must be a vaild ${inputLabel.textContent}`;
+    errorLabel.textContent = `Must be a vaild ${inputLabel.textContent}`;
   }
   errorLabel.style.display = "block";
 };
@@ -65,94 +67,40 @@ const isValidDay = (day, month, year) => {
 };
 
 /**
+ *  returns the days of the previous inputted month.
+ * @param {string} year year inputted
+ * @param {string} month month inputted
+ * @param {string} day  day inputted
+ */
+function getDaysInMonth(year, month, day) {
+  const pastDate = new Date(year, month - 1, day);
+  pastDate.setUTCDate(0);
+  return pastDate.getUTCDate();
+}
+/**
  * calculates the resulted difference between the present and the inputted date
  * @param {string} year year inputted
  * @param {string} month month inputted
  * @param {string} day  day inputted
  */
-// const calculateDifference = (year, month, day) => {
-//   const pastDate = new Date(year, month - 1, day);
-//   const today = new Date();
-
-//   // Date class calculates to if year is equal or larger than 100 years, with regard to Gregorian calendar.
-//   // add below to calculate anything below 100
-//   let diffYears;
-//   if (year < 100) {
-//     diffYears = today.getFullYear() - year;
-//   } else {
-//     diffYears = today.getFullYear() - pastDate.getFullYear();
-//   }
-
-//   let diffMonths = today.getMonth() - pastDate.getMonth();
-//   let diffDays = today.getDate() - pastDate.getDate();
-//   if (diffMonths < 0 || (diffMonths === 0 && diffDays < 0)) {
-//     console.log("here");
-//     diffYears--;
-//     diffMonths += 12;
-//   }
-//   if (diffDays < 0) {
-//     const daysInPreviousMonth = new Date(
-//       today.getFullYear(),
-//       today.getMonth(),
-//       0
-//     ).getDate();
-//     diffDays += daysInPreviousMonth;
-//   }
-
-//   yearsResult.textContent = diffYears;
-//   monthsResult.textContent = diffMonths;
-//   daysResult.textContent = diffDays;
-// };
-
 const calculateDifference = (year, month, day) => {
-  const pastDate = new Date(year, month - 1, day);
   const today = new Date();
-  const millisecondsPerDay = 86400000;
-  const millisecondsPerYear = 31536000000;
-  const millisecondsPerMonth = 2592000000;
 
-  const diffMilliseconds = today.getTime() - pastDate.getTime();
+  const diffYears = today.getFullYear() - year;
+  let diffMonths = Math.abs(today.getMonth() + 1 - month);
 
-  let diffYears;
-  if (year < 100) {
-    diffYears = today.getFullYear() - year;
-  } else {
-    diffYears = Math.floor(diffMilliseconds / millisecondsPerYear);
-  }
-  let diffMonths = Math.floor(
-    (diffMilliseconds % millisecondsPerYear) / millisecondsPerMonth
-  );
-  // console.log(--diffMonths);
+  let diffDays = today.getDay() + 1 - day;
 
-  let diffDays = today.getDate() - pastDate.getDate();
-
-  // let diffDays = Math.floor(
-  //   (diffMilliseconds % millisecondsPerMonth) / millisecondsPerDay
-  // );
-
-  if (diffMonths < 0 || (diffMonths === 0 && diffDays < 0)) {
-    console.log("here");
-    diffYears--;
-    diffMonths += 12;
-  }
-  // if (diffDays === 0) {
-  //   console.log("mont");
-  //   --diffMonths 
-  // } 
   if (diffDays < 0) {
-    const daysInPreviousMonth = new Date(
-      today.getFullYear(),
-      today.getMonth(),
-      0
-    ).getDate();
-    diffDays += daysInPreviousMonth;
+    diffDays += getDaysInMonth(year, month, day);
+    --diffMonths;
   }
+  const errorMargin = 1;
+  diffDays = diffDays - errorMargin;
   yearsResult.textContent = diffYears;
   monthsResult.textContent = diffMonths;
   daysResult.textContent = diffDays;
-  console.log(diffYears, diffMonths, diffDays);
 };
-calculateDifference(100, 2, 1);
 
 // collects inputted data
 const setInputEvents = () => {
