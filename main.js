@@ -26,7 +26,7 @@ const setInvalidInputStyle = (inputLabel, inputField, errorLabel) => {
 
   if (inputField.value === "") {
     errorLabel.textContent = "This field is required";
-  } else if (inputField.name === "year") {
+  } else if (inputField.name === "year" && inputField.value != 0) {
     errorLabel.textContent = "Must be in the past";
   } else {
     errorLabel.textContent = `Must be a vaild ${inputLabel.textContent}`;
@@ -46,6 +46,7 @@ const isValidYear = (year) => {
   if (year === "") {
     return "";
   }
+
   const currentYear = new Date().getFullYear();
   return year <= currentYear && year > 0;
 };
@@ -66,6 +67,15 @@ const isValidDay = (day, month, year) => {
   return day > 0 && day <= lastDay;
 };
 
+const isValidDate = (year, month, day) => {
+  const inputDate = new Date(year, month - 1, day);
+  const todayDate = new Date();
+  if (inputDate > todayDate) {
+    return false;
+  }
+
+  return true;
+};
 /**
  *  returns the days of the previous inputted month.
  * @param {string} year year inputted
@@ -83,23 +93,40 @@ function getDaysInMonth(year, month, day) {
  * @param {string} month month inputted
  * @param {string} day  day inputted
  */
+
 const calculateDifference = (year, month, day) => {
   const today = new Date();
 
-  const diffYears = today.getFullYear() - year;
-  let diffMonths = Math.abs(today.getMonth() + 1 - month);
+  let thisMonth = today.getMonth() + 1;
+  let thisDay = today.getDay() + 1;
 
-  let diffDays = today.getDay() + 1 - day;
+  let diffYears = today.getFullYear() - year;
+  let diffMonths = Math.abs(thisMonth - month);
+  let diffDays = thisDay - day;
 
-  if (diffDays < 0) {
+  if (month > thisMonth) {
+    thisMonth += 12 - month;
+    diffMonths = thisMonth;
+    --diffYears;
+  }
+  if (
+    day === getDaysInMonth(year, month, day) ||
+    (month === 3 && diffDays < 0)
+  ) {
+    diffDays = thisDay;
+    --diffMonths;
+  } else if (diffDays <= 0) {
     diffDays += getDaysInMonth(year, month, day);
     --diffMonths;
   }
   const errorMargin = 1;
-  diffDays = diffDays - errorMargin;
+  if (diffDays !== 0 && month != 12) {
+    diffDays = diffDays - errorMargin;
+  }
   yearsResult.textContent = diffYears;
   monthsResult.textContent = diffMonths;
   daysResult.textContent = diffDays;
+  return [`${diffYears} years`, `${diffMonths} months`, `${diffDays} days`];
 };
 
 // collects inputted data
@@ -120,12 +147,17 @@ const setSubmitButtonEvent = () => {
       inputValues.month,
       inputValues.year
     );
-    setStylesOnSubmit(day, month, year);
+    const inPast = isValidDate(
+      inputValues.year,
+      inputValues.month,
+      inputValues.day
+    );
+    setStylesOnSubmit(day, month, year, inPast);
   });
 };
 
-const setStylesOnSubmit = (day, month, year) => {
-  if (!day || !month || !year) {
+const setStylesOnSubmit = (day, month, year, inPast) => {
+  if (!day || !month || !year || !inPast) {
     yearsResult.textContent = "--";
     monthsResult.textContent = "--";
     daysResult.textContent = "--";
@@ -147,8 +179,13 @@ const setStylesOnSubmit = (day, month, year) => {
   } else {
     setValidInputStyle(yearLabel, yearInput, errorYear);
   }
+  if (!inPast) {
+    setInvalidInputStyle(yearLabel, yearInput, errorYear);
+  } else {
+    setValidInputStyle(yearLabel, yearInput, errorYear);
+  }
 
-  if (day && month && year) {
+  if (day && month && year && inPast) {
     calculateDifference(inputValues.year, inputValues.month, inputValues.day);
   }
 };
