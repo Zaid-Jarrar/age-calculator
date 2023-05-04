@@ -98,34 +98,50 @@ const calculateDifference = (year, month, day) => {
   const today = new Date();
 
   let thisMonth = today.getMonth() + 1;
-  let thisDay = today.getDay() + 1;
+  let thisDay = today.getDay();
+  let thisMonthDays = getDaysInMonth(year, month + 1, day);
+
+  let lastMonthDays = getDaysInMonth(year, month, day);
 
   let diffYears = today.getFullYear() - year;
   let diffMonths = Math.abs(thisMonth - month);
   let diffDays = thisDay - day;
 
+  if (month == thisMonth && diffDays != 0) {
+    --diffYears;
+    diffMonths = 11;
+    diffDays = diffDays + thisMonthDays;
+
+    if (diffDays > thisMonthDays) {
+      ++diffMonths;
+      if (diffMonths >= 12) {
+        ++diffYears;
+        diffMonths = 0;
+        diffDays = diffDays - thisMonthDays;
+      }
+    }
+  }
   if (month > thisMonth) {
     thisMonth += 12 - month;
     diffMonths = thisMonth;
     --diffYears;
   }
-  if (
-    day === getDaysInMonth(year, month, day) ||
-    (month === 3 && diffDays < 0)
-  ) {
+  if (day === lastMonthDays || (month === 3 && diffDays < 0)) {
     diffDays = thisDay;
     --diffMonths;
-  } else if (diffDays <= 0) {
-    diffDays += getDaysInMonth(year, month, day);
+  } else if (diffDays < 0 && diffMonths != 0) {
+    if (thisMonthDays != 31) {
+      diffDays += lastMonthDays;
+    } else {
+      diffDays += thisMonthDays;
+    }
     --diffMonths;
   }
-  const errorMargin = 1;
-  if (diffDays !== 0 && month != 12) {
-    diffDays = diffDays - errorMargin;
-  }
+
   yearsResult.textContent = diffYears;
   monthsResult.textContent = diffMonths;
   daysResult.textContent = diffDays;
+  
   return [`${diffYears} years`, `${diffMonths} months`, `${diffDays} days`];
 };
 
