@@ -23,15 +23,17 @@ const setInputValues = (e) => {
 const setInvalidInputStyle = (inputLabel, inputField, errorLabel) => {
   inputLabel.style.color = "hsl(0, 100%, 67%)";
   inputField.style.border = "2px solid hsl(0, 100%, 67%)";
+  errorLabel.style.display = "block";
 
   if (inputField.value === "") {
+    errorLabel.style.display = "block";
+
     errorLabel.textContent = "This field is required";
   } else if (inputField.name === "year" && inputField.value != 0) {
     errorLabel.textContent = "Must be in the past";
   } else {
     errorLabel.textContent = `Must be a vaild ${inputLabel.textContent}`;
   }
-  errorLabel.style.display = "block";
 };
 
 // Valid
@@ -111,7 +113,7 @@ const calculateDifference = (year, month, day) => {
     if (diffYears != 0 && diffDays < 0) {
       --diffYears;
       diffMonths = 11;
-      
+
       diffDays = diffDays + thisMonthDays;
     }
 
@@ -192,7 +194,6 @@ const setStylesOnSubmit = (day, month, year, inPast) => {
   } else {
     setValidInputStyle(monthLabel, monthInput, errorMonth);
   }
-
   if (!year) {
     setInvalidInputStyle(yearLabel, yearInput, errorYear);
   } else {
@@ -200,7 +201,7 @@ const setStylesOnSubmit = (day, month, year, inPast) => {
   }
   if (!inPast) {
     setInvalidInputStyle(yearLabel, yearInput, errorYear);
-  } else {
+  } else if ((day || month ||  inPast) && year) {
     setValidInputStyle(yearLabel, yearInput, errorYear);
   }
 
