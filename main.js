@@ -98,7 +98,7 @@ const calculateDifference = (year, month, day) => {
   const today = new Date();
 
   let thisMonth = today.getMonth() + 1;
-  let thisDay = today.getDay();
+  let thisDay = today.getDate();
   let thisMonthDays = getDaysInMonth(year, month + 1, day);
 
   let lastMonthDays = getDaysInMonth(year, month, day);
@@ -107,10 +107,13 @@ const calculateDifference = (year, month, day) => {
   let diffMonths = Math.abs(thisMonth - month);
   let diffDays = thisDay - day;
 
-  if (month == thisMonth && diffDays != 0) {
-    --diffYears;
-    diffMonths = 11;
-    diffDays = diffDays + thisMonthDays;
+  if (diffMonths == 0 && diffDays != 0) {
+    if (diffYears != 0 && diffDays < 0) {
+      --diffYears;
+      diffMonths = 11;
+      
+      diffDays = diffDays + thisMonthDays;
+    }
 
     if (diffDays > thisMonthDays) {
       ++diffMonths;
@@ -126,7 +129,7 @@ const calculateDifference = (year, month, day) => {
     diffMonths = thisMonth;
     --diffYears;
   }
-  if (day === lastMonthDays || (month === 3 && diffDays < 0)) {
+  if (day === lastMonthDays && diffDays < 0) {
     diffDays = thisDay;
     --diffMonths;
   } else if (diffDays < 0 && diffMonths != 0) {
@@ -136,15 +139,15 @@ const calculateDifference = (year, month, day) => {
       diffDays += thisMonthDays;
     }
     --diffMonths;
+  } else {
   }
 
   yearsResult.textContent = diffYears;
   monthsResult.textContent = diffMonths;
   daysResult.textContent = diffDays;
-  
+
   return [`${diffYears} years`, `${diffMonths} months`, `${diffDays} days`];
 };
-
 // collects inputted data
 const setInputEvents = () => {
   inputs.forEach((input) => {
